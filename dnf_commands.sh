@@ -2,51 +2,51 @@
 
 ##########################################################################################################################
 # Script: DNF Commands
-# Autor: ThinkRoot
-# Versiune: 2.1
+# Author: ThinkRoot
+# Version: 2.1
 
-# Descriere:
-#   Acest script configurează și creează comenzi pentru gestionarea pachetelor în Fedora utilizând DNF.
-#   El creează fișierele update, upgrade, search, install și remove în directorul ~/.bin și adaugă directorul ~/.bin la calea de căutare a executabilelor ($PATH) în fișierul .bashrc.
+# Description:
+#   This script configures and creates commands for package management in Fedora using DNF.
+#   It creates the update, upgrade, search, install, and remove files in the ~/.bin directory and adds the ~/.bin directory to the executable search path ($PATH) in the .bashrc file.
 
-# Utilizare:
-# 1. Rulați acest script într-un terminal, folosind comanda: ./dnf_commands.sh
-# 2. După rularea scriptului, puteți utiliza comenzile create (update, upgrade, search, install, remove) în terminal.
-# 3. Comenzile pot fi rulate direct din terminal fără a specifica calea către directorul ~/.bin.
+# Usage:
+# 1. Run this script in a terminal using the command: ./dnf_commands.sh
+# 2. After running the script, you can use the created commands (update, upgrade, search, install, remove) in the terminal.
+# 3. The commands can be run directly from the terminal without specifying the path to the ~/.bin directory.
 ##########################################################################################################################
 
 
-# Verificăm dacă directorul ~/.bin există, altfel îl creăm
+# Check if the ~/.bin directory exists, otherwise create it
 if [ ! -d "$HOME/.bin" ]; then
     mkdir "$HOME/.bin"
-    echo "Directorul ~/.bin a fost creat."
+    echo "The ~/.bin directory has been created."
 fi
 
-# Funcție pentru crearea și configurarea scripturilor
+# Function to create and configure the scripts
 create_script() {
     local script_name="$1"
     local script_content="$2"
     local script_file="$HOME/.bin/$script_name"
 
-    # Verificăm dacă fișierul de script există deja, altfel îl creăm și adăugăm conținutul
+    # Check if the script file already exists, otherwise create it and add the content
     if [ ! -f "$script_file" ]; then
-        # Cream fișierul de script și adăugăm conținutul
+        # Create the script file and add the content
         cat <<EOF > "$script_file"
 #!/bin/bash
 
 $script_content
 EOF
 
-        # Dăm permisiuni de execuție pentru fișierul de script
+        # Give execute permissions to the script file
         chmod +x "$script_file"
 
-        echo "Fișierul \"$script_file\" a fost creat și configurat."
+        echo "The file \"$script_file\" has been created and configured."
     else
-        echo "Fișierul \"$script_file\" există deja. Nu se face nimic."
+        echo "The file \"$script_file\" already exists. Nothing is done."
     fi
 }
 
-# Creăm și configurăm fișierele update, upgrade, search, install, remove
+# Create and configure the update, upgrade, search, install, remove files
 
 create_script "update" "sudo dnf update \"\$@\""
 create_script "upgrade" "sudo dnf upgrade \"\$@\""
@@ -54,18 +54,18 @@ create_script "search" "dnf search \"\$@\""
 create_script "install" "sudo dnf install \"\$@\""
 create_script "remove" "sudo dnf remove \"\$@\""
 
-# Adăugăm linia necesară în fișierul .bashrc dacă nu există deja
+# Add the necessary line to the .bashrc file if it doesn't already exist
 BASHRC_FILE="$HOME/.bashrc"
 LINE_TO_ADD="export PATH=\"\$HOME/.bin:\$PATH\""
 
 if ! grep -qF "$LINE_TO_ADD" "$BASHRC_FILE"; then
     echo "$LINE_TO_ADD" >> "$BASHRC_FILE"
-    echo "Linia \"$LINE_TO_ADD\" a fost adăugată în fișierul \"$BASHRC_FILE\"."
+    echo "The line \"$LINE_TO_ADD\" has been added to the file \"$BASHRC_FILE\"."
 else
-    echo "Linia \"$LINE_TO_ADD\" există deja în fișierul \"$BASHRC_FILE\". Nu se face nimic."
+    echo "The line \"$LINE_TO_ADD\" already exists in the file \"$BASHRC_FILE\". Nothing is done."
 fi
 
-# Aplicăm modificările în shell-ul curent
+# Apply the changes in the current shell
 source "$BASHRC_FILE"
 
-echo "Configurarea a fost finalizată."
+echo "Configuration has been completed."
