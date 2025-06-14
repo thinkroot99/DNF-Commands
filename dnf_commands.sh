@@ -58,6 +58,11 @@ create_script "remove" "sudo dnf remove \"\$@\""
 BASHRC_FILE="$HOME/.bashrc"
 LINE_TO_ADD="export PATH=\"\$HOME/.bin:\$PATH\""
 
+# Create the .bashrc file if it does not exist to avoid grep errors
+if [ ! -f "$BASHRC_FILE" ]; then
+    touch "$BASHRC_FILE"
+fi
+
 if ! grep -qF "$LINE_TO_ADD" "$BASHRC_FILE"; then
     echo "$LINE_TO_ADD" >> "$BASHRC_FILE"
     echo "The line \"$LINE_TO_ADD\" has been added to the file \"$BASHRC_FILE\"."
